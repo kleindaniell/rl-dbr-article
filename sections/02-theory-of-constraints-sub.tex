@@ -1,0 +1,200 @@
+\subsection{Theory of Constraints}\label{theory-of-constraints}
+
+A constraint is any factor that prevents a system from achieving its
+goal (Mabin and Balderstone, 2003). In manufacturing environments,
+constraints can take the form of equipment with limited capacity or low
+reliability, operations that produce high rates of defective parts, or
+policies that limit the system's flexibility or efficiency (Gupta and
+Boyd, 2008). Addressing the system's constraint often involves five
+major steps (Watson \emph{et al.}, 2007): (i) identify the system's
+constraint; (ii) exploit the constraint; (iii) subordinate everything
+else to the constraint; (iv) elevate the constraint; and (v) if the
+constraint is resolved, restart the process from step (i).
+
+When demand \(d\) exceeds the planned capacity \(p\), identifying the
+system's constraint (step 1) requires locating the resource
+\(j \in \left\{ 0,\ 1,\ 2,\ \ldots,J \right\}\) with the highest load
+\(l_{j}\), defined as \({argmax}_{j}l_{j}\) (\colorbox{yellow!40}{Reference}). In a
+stochastic manufacturing environment producing multiple products
+\(i \in \left\{ 0,\ 1,\ 2,\ \ldots,I \right\}\) in quantities \(m_{i}\),
+utilizing \(J\) resources with expected cycle times
+\(\mathbb{E}\left\lbrack \mathcal{T}_{ij}^{c} \right\rbrack\)\hspace{0pt},
+considering each resource's expected overall effectiveness
+\(\mathbb{E}\left\lbrack \mathcal{E}_{j} \right\rbrack\)\hspace{0pt}\hspace{0pt}
+and change-over time
+\(\mathbb{E}\left\lbrack \mathcal{T}_{j}^{CT} \right\rbrack\), the load
+on a resource can be calculated as follows (\colorbox{yellow!40}{Reference}):
+
+\begin{equation}
+d = \left. \ \sum_{\forall i}^{}{m_{i}\max\left( \frac{\mathbb{E}\left\lbrack \mathcal{T}_{ij}^{c} \right\rbrack}{\mathbb{E}\left\lbrack \mathcal{E}_{j} \right\rbrack} + \frac{\mathbb{E}\left\lbrack \mathcal{T}_{j}^{CT} \right\rbrack}{m_{i}} \right)} \right|D_{i} \in D \land D = d;
+\tag{8}
+\end{equation}
+
+\begin{equation}
+\left. \ l_{j} = \frac{1}{p}\left\lbrack \left( \sum_{\forall i}^{}{m_{i}\frac{\mathbb{E}\left\lbrack \mathcal{T}_{ij}^{c} \right\rbrack}{\mathbb{E}\left\lbrack \mathcal{E}_{j} \right\rbrack}} \right)\mathbb{+ E}\left\lbrack \mathcal{T}_{j}^{CT} \right\rbrack \right\rbrack \right|d \geq p.
+\tag{9}
+\end{equation}
+
+Once the constraint is identified, the next step is to determine the
+most effective way to exploit it (step 2) and then adjust all other
+operations accordingly (step 3) (Cox and Schleier, 2010). In production
+scheduling, this is achieved by implementing DBR and BM (Telles \emph{et
+al.}, 2020a). The constraint corresponds to the drum in DBR, which
+dictates the overall system's performance (Darlington \emph{et al.},
+2015). In TOC, manufacturing performance is primarily measured by
+throughput \((\tau)\), which represents the money generated from sales
+(Stefano \emph{et al.}, 2022). Throughput is calculated as the
+difference between revenue \((\rho)\) and total variable costs \((c)\)
+for each product \(i\), multiplied by its respective quantities produced
+and sold. This can be expressed as:
+
+\begin{equation}
+\tau = \sum_{i = 1}^{I}{\left( \rho_{i} - c_{i} \right)m_{i}}.
+\tag{10}
+\end{equation}
+
+Additionally, there are two other performance measures (\colorbox{yellow!40}{Reference}):
+(i) inventory \(\mathcal{(i)}\), which represents the total money
+invested in purchasing items intended for sale; and (ii) operating
+expenses \((e)\), which reflect the money spent to convert inventory
+into throughput.
+
+Buffers are another class of element in DBR, typically categorized into
+two types (when there are no assembly stations). The first is the
+constraint buffer (CB), located before the constraint to protect its
+flow and ensure it operates without shortages (\colorbox{yellow!40}{Reference}). The
+second is the shipping buffer (SB), positioned at the end of the system
+to protect against disruptions to the flow at any point in the process
+(\colorbox{yellow!40}{Reference}). The initial size of these buffers
+\(\left( b_{i}^{x} \right)\) for each product \(i\) is typically defined
+by the quantity of semi-finished or finished products corresponding to
+half the expected lead time from the start of the process \(j = 1\) to
+the position \(j = n\), where the buffer
+\(\mathcal{x} \in \left\{ CB,SB \right\}\) is located (\colorbox{yellow!40}{cf.,
+Reference}). The lead time \(\mathcal{T}_{i}^{\mathcal{l}}\) is a random
+variable resulting from the sum of all cycle times
+\(\mathcal{T}_{ij}^{c}\) and waiting times \(\mathcal{T}_{ij}^{w}\)
+belonging to a specific production route \(1 \rightarrow n\), and its
+expected value is defined as:
+
+\begin{equation}
+\mathbb{E}\left\lbrack \mathcal{T}_{i}^{\mathcal{l}}\mathcal{|x} \right\rbrack\  = \ \sum_{\forall j \in (1 \rightarrow n)}^{}{\mathbb{E}\left\lbrack \mathcal{T}_{ij}^{c} \right\rbrack\mathbb{+ E}\left\lbrack \mathcal{T}_{ij}^{w} \right\rbrack}\left\{ \binom{n = {argmax}_{j}l_{j}\ }{n = N\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\binom{if\mathcal{\ x =}CB}{if\mathcal{\ x =}SB} \right.\ .
+\tag{11}
+\end{equation}
+
+According to Little's Law (\colorbox{yellow!40}{Reference}), the initial buffer size can
+be estimated as follows:
+
+\begin{equation}
+b_{i}^{\mathcal{x}} \approx \min\left( \frac{\mathbb{E}\left\lbrack \mathcal{E}_{j} \right\rbrack}{\mathbb{E}\left\lbrack \mathcal{T}_{ij}^{c} \right\rbrack} \right)\left( \frac{\mathbb{E}\left\lbrack \mathcal{T}_{i}^{\mathcal{l}} \right\rbrack}{2} \right).
+\tag{12}
+\end{equation}
+
+The initial buffer size is often dynamically adjusted to a `steady
+state' reference level \({b'}_{i}^{x}\) using Buffer Management (BM)
+policies (Schragenheim, 2010a). Within the TOC framework, the buffers
+are typically divided into three distinct zones---red, yellow, and
+green. Each zone represents one-third of the current reference level,
+with the red zone indicating the lowest inventory level and the green
+zone the highest (Telles \emph{et al.}, 2022b). The reference leve is
+continuous evaluated over a replenishment time \(\mathcal{T}_{i}^{R}\),
+that is difined as the sum of order planning interval
+\(\mathrm{\Delta}\varphi\) and the lead time
+\(\mathcal{T}_{i}^{\mathcal{l}}\) (Schragenheim, 2010b). If the actual
+buffer level, \(H_{i}^{x}\), remains consistently within the green zone
+for a duration of at least three replenishment times
+\(3\mathcal{T}_{i}^{R}\), the reference level is reduced by 15\% for the
+subsequent order planning interval, \(\mathrm{\Delta}\varphi + 1\). The
+reduction logic is defined as:
+
+\begin{equation}
+{b'}_{i,\Delta\varphi + 1}^{x} = 0.85b_{i,\Delta\varphi}^{x}\quad\text{if}\quad H_{i,t}^{x} \geq \frac{2}{3}b_{i,\Delta\varphi}^{x}\ |\ \forall t \in \left\lbrack 0,\ 3\mathcal{T}_{i}^{R} \right\rbrack
+\tag{13}
+\end{equation}
+
+Conversely, the buffer must be expanded if the cumulative penetrations
+into the red zone, \(k_{i}^{x}\), achieve or exceed the total size of
+the red zone during a single replenishment time \(\mathcal{T}_{i}^{R}\)
+(Schragenheim, 2010b). The reference level is increased by 20\% for the
+next order planning interval \(\Delta\varphi\). The expansion logic is
+defined as:
+
+\begin{equation}
+{b'}_{i,\Delta\varphi + 1}^{x} = 1.2b_{i,\Delta\varphi}^{x}\quad\text{if}\quad\sum_{t = 0}^{\mathcal{T}_{i}^{R}}k_{i,t}^{x} \geq \frac{1}{3}b_{i,\Delta\varphi}^{x}
+\tag{14}
+\end{equation}
+
+The rationale for these adjustments is to protect the production flow
+while maintaining the minimum inventory \(\mathcal{i}\).
+
+Similar to buffers, production scheduling is another approach to
+exploiting the constraint (step 2) (\colorbox{yellow!40}{Reference}). In TOC, the goal of
+scheduling is to maximize throughput during the replenishment interval
+(\colorbox{yellow!40}{Reference}). Therefore, the sequence of products \(i\) to be
+produced is defined in descending order of throughput, moderated by the
+priority level of finished products in the SB, i.e.,
+\({\left( \frac{\mathcal{b'}_{i}^{SB}}{H_{i}^{SB}} \right)\tau}_{i}^{(1)} \geq \left( \frac{\mathcal{b'}_{i}^{SB}}{H_{i}^{SB}} \right)\tau_{i}^{(2)} \geq \ldots \geq \left( \frac{\mathcal{b'}_{i}^{SB}}{H_{i}^{SB}} \right)\tau_{i}^{(\mathfrak{n})}\),
+based on the following equation:
+
+\begin{equation}
+\left. \ \underset{m_{i}}{argmax\ }\tau \right|\frac{\mathrm{\Delta}d}{\mathrm{\Delta}\varphi} \leq \frac{\mathrm{\Delta}p}{\mathrm{\Delta}\varphi}.
+\tag{15}
+\end{equation}
+
+The rope is the final element of DBR, and its function is to subordinate
+the rest of the system to the constraint (step 3) (\colorbox{yellow!40}{Reference}).
+Often, the demand is greater than the capacity during the replenishment
+interval, which could lead to the creation and release of orders that
+the system cannot fully execute, ultimately increasing \(\mathcal{i}\)
+(\colorbox{yellow!40}{Reference}). Therefore, the rope's role is to release production
+orders based on the consumption of the CB, as outlined in
+\colorbox{yellow!40}{\hyperref[_Ref187516903]{Figure 3}}.
+
+The quantity of each product \(i\) to be produced during the
+replenishment interval \(M_{i}^{\mathrm{\Delta}\varphi}\) is typically a
+function of the SB level \(H_{i}^{SB}\) and its reference
+\(\mathcal{b'}_{i}^{SB}\) and the work-in-process \(W_{i}^{SB}\) along a
+complete production route \(1 \rightarrow N\), as described by the
+following equations (Cox III and Schleier Jr., 2010):
+
+\begin{equation}
+W_{i}^{SB} = \sum_{\forall j \in (1 \rightarrow N)}^{}w_{ij};
+\tag{16}
+\end{equation}
+
+\begin{equation}
+M_{i}^{\mathrm{\Delta}\varphi} = \left( \mathcal{b'}_{i}^{SB} - H_{i}^{SB} \right) - W_{i}^{SB};
+\tag{17}
+\end{equation}
+
+where \(w_{ij}\) represents the quantity of product \(i\) being produced
+at the resource \(j\). This quantity is stored in a `virtual buffer'
+known as the order buffer (OB), which typically has an initial infinite
+size \(\left( \mathcal{b}_{i}^{OB} = \infty \right)\) and a reference
+level based on the replenishment interval, i.e.,
+\({\mathcal{b}'}_{i}^{OB} = M_{i}^{\mathrm{\Delta}\varphi}\).
+Additionally, the quantity of each product \(i\) to be released for
+production within a given time interval \(M_{i}^{\mathrm{\Delta}t}\) is
+a function of the CB level \(H_{i}^{CB}\), its reference
+\(\mathcal{b'}_{i}^{CB}\), and the work-in-process \(W_{i}^{CB}\) along
+a partial production route \(1 \rightarrow {argmax}_{j}l_{j}\) that ends
+at the constraint. This relationship is described as follows:
+
+\begin{equation}
+W_{i}^{CB} = \sum_{\forall j \in \left( 1 \rightarrow {argmax}_{j}l_{j} \right)}^{}w_{ij};
+\tag{18}
+\end{equation}
+
+\begin{equation}
+M_{i}^{\mathrm{\Delta}t} = \left( \mathcal{b'}_{i}^{CB} - H_{i}^{CB} \right) - W_{i}^{CB}.
+\tag{19}
+\end{equation}
+
+The number of orders released reduces the current level of the OB,
+denoted as \(H_{i}^{OB}\).
+
+Step 4 may involve increasing shifts, hiring additional labor, or
+purchasing new equipment to increase the capacity of the constraint
+(Goldratt, 2006b). Step 5 continues the cycle of continuous improvement
+within TOC (Goldratt and Cox, 1984b). Both of these steps are beyond the
+scope of the current work.

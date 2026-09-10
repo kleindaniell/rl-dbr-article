@@ -1,0 +1,132 @@
+\subsection{RL \& TOC-Based Simulation Model {[}REVISED DRAFT -- pending
+author
+review{]}}\label{rl-toc-based-simulation-model-revised-draft-pending-author-review}
+
+\noindent\colorbox{yellow!40}{REVISED DRAFT --- pending author review. Kept alongside the original version of this section below; the two have not yet been reconciled (see the reviewer note at the end of this block).}\par\medskip
+
+The TOC \& RL-based simulation model was also built upon the virtual
+environment established in Section 4.1. The state space 𝒮 comprises 22
+variables: two constraint-buffer variables --- the portion of
+constraint-buffer time not yet arrived at the CCR, H\^{}CB\_wip,t, and
+the portion already queued at the CCR, H\^{}CB\_queue,t --- together
+with, for each product i, its work-in-process level, W\_i,t, and its
+finished-goods (shipping-buffer) level, H\^{}SB\_i,t:
+
+\emph{𝒮 = \{ H\^{}CB\_wip,t , H\^{}CB\_queue,t \} ∪ \{ W\_i,t ,
+H\^{}SB\_i,t \textbar{} i = 1, \ldots, I \}, I = 10}
+
+H\^{}CB\_wip,t and H\^{}CB\_queue,t are measured in hours of processing
+time still owed to the CCR and take non-negative real values; W\_i,t and
+H\^{}SB\_i,t are non-negative integers. Before reaching the policy
+network, all state variables are normalized online using running mean
+and variance statistics accumulated during training.
+
+This state informs the agent, which independently selects, for each
+product i, the number of units to release during the replenishment
+interval, forming the action space:
+
+\emph{𝒜(𝒮) = \{ M\_i,t \textbar{} m = 0, 1, \ldots, 60 \}, i = 1,
+\ldots, I = 10}
+
+This decision is made autonomously and is not explicitly modeled by
+Equation 17. Because the I = 10 products are chosen independently and
+simultaneously, 𝒜(𝒮) is a multi-discrete space with 10 sub-actions of 61
+categories each --- 610 discrete outputs in the policy's action layer.
+The upper bound M\_i,t = 60 units was set based on the highest order
+size observed in the TOC-based model over {[}xx{]} replications
+{[}confirm the scaling factor applied{]}. The production sequence
+follows Equation 15, and, as in the TOC-based model, it is assumed that
+(ρ\_i − c\_i) = 1 when defining τ\_i in Equation 10, since the original
+work by Atwater and Chakravorty (2002) does not take into account the
+revenue and variable costs of the products sold. The release of orders
+follows Equation 19. These relationships are illustrated in Figure 5.
+
+The agent receives a numerical reward R\_t+1 as a result of its action
+(Sutton and Barto, 2018), composed of a fixed baseline, a throughput
+term, and two penalty subfunctions:
+
+\emph{(20) R\_t+1 = R\_0 + TH\_t+1 − P\^{}LS\_t+1 − P\^{}W\_t+1 −
+P\^{}SB\_t+1}
+
+R\_0 is a fixed baseline reward added at every step. TH\_t+1 is the
+throughput term; because the original work by Atwater and Chakravorty
+(2002) does not provide the information needed to compute throughput as
+sold value, TH\_t+1 is set to zero during training, and its role is
+absorbed entirely into the lost-sales penalty P\^{}LS\_t+1. Whenever
+demand for product i exceeds its current finished-goods level
+H\^{}SB\_i,t, the system immediately fails to make a sale and cannot
+convert inventory into throughput (cf., Reference):
+
+\emph{(21) P\^{}LS\_t+1 = λ\_LS · Σ(i=1..I) L\_i,t}
+
+where L\_i,t is the number of units of product i lost to unmet demand
+during interval t, and λ\_LS is a penalty weight (λ\_LS = 10 during
+training).
+
+The second measure is inventory, represented by the total quantity of
+items rather than monetary values, for the same reason as throughput.
+Inventory is penalized through two subfunctions, one for work-in-process
+and one for finished goods, each summed across the I = 10 products:
+
+\emph{(22) P\^{}W\_t+1 = λ\_W · Σ(i=1..I) W\_i,t}
+
+\emph{(23) P\^{}SB\_t+1 = λ\_SB · Σ(i=1..I) H\^{}SB\_i,t}
+
+with λ\_W = 0.002 and λ\_SB = 0.001. The constraint-buffer variables
+(H\^{}CB\_wip,t, H\^{}CB\_queue,t) are part of the state 𝒮 but are not
+penalized directly in the reward. The overall goal is to prevent lost
+sales while maintaining the lowest possible inventory level (cf.,
+Schragenheim, 2010b); accordingly, λ\_SB is set lower than λ\_W.
+
+In the RL \& TOC-based simulation model, each decision step advances the
+simulation clock by the replenishment interval τ = 168 hours, matching
+the order-planning interval defined for the TOC-based model in Section
+4.2. An episode begins at the start of a simulation run and proceeds
+through successive decision steps until either (i) the reward R\_t+1
+computed for a step turns negative, ending the episode immediately (cf.
+Reference), or (ii) the simulation clock reaches the 200,000-hour
+horizon, truncating the episode. By incorporating the reward function
+(Equation 20) into the return function (Equation 2) and assuming a
+discount factor γ = 0.99, along with rewards received at future time
+steps (t′ \textgreater{} t), we construct the state-value function
+(Equation 3), from which the agent is trained to seek the optimal policy
+π*.
+
+The algorithm used to train the optimal policy is PPO (Schulman et al.,
+2017), implemented with the Stable-Baselines3 library (Raffin et al.,
+2021), using a multi-input policy network with two hidden layers of 128
+units each, shared between the actor and critic branches, that
+approximates both the policy and the state-value function (Russell and
+Norvig, 2010; Schulman et al., 2017). Observations and rewards were
+normalized online (zero mean, unit variance, clipped at ±10,000)
+throughout training. Training used 8 parallel environment instances, a
+rollout length of 4,096 steps per environment, mini-batches of 2,048
+transitions, and 5 optimization epochs per rollout, with a learning rate
+that decayed linearly from 10⁻³ to 10⁻⁴ (Equation 7) over a maximum of
+16,800,000 timesteps and 277,777 episodes, the virtual environment being
+reset each time the step reward turned negative (cf. Reference). The
+maximum number of episodes was set based on {[}define the reason{]}
+(cf., Reference). Two criteria were used to terminate the training
+process (Reference): (i) the maximum number of timesteps was reached, or
+(ii) return saturation occurred, where the return remained stable over
+{[}xx{]} episodes.
+
+From a computational perspective, the training process was completed in
+2 hours, utilizing 15 machines running in parallel, each with the
+following specifications: an i5-13450HX processor, 16 GB of RAM, and an
+NVIDIA GeForce RTX 4050 graphics card. A state-value of 0.996 was
+achieved after 13,888 episodes, as shown in Figure 6a. The behavior of
+the penalty subfunctions is also illustrated in Figure 6b--d.
+
+\emph{{[}Reviewer note: Figure 6's original caption lists four
+penalty-subfunction panels --- lost sales, work-in-process, CB level,
+and SB level ((b)--(e)) --- but the reward above has only three: lost
+sales, work-in-process, and SB/finished-goods (Equations 21--23), with
+no CB term. Panel (d), the CB-level curve, should be removed, and the
+current panel (e) (SB) should become the new panel (d), so the caption
+reads: (a) return; (b) lost-sales penalty; (c) work-in-process penalty;
+(d) finished-goods (SB) penalty. With this change, the body text's
+existing ``Figure 6b--d'' citation is already correct and needs no
+further edit.{]}}
+
+\bigskip\noindent\hrulefill\par\smallskip\noindent\textbf{Original version} (kept for comparison --- the revised draft above and this original section have not yet been reconciled by the author).\par\bigskip

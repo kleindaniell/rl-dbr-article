@@ -1,0 +1,119 @@
+\section{Introduction}\label{introduction}
+
+The persistent lack of synchronization between demand and capacity
+continues to present significant challenges, even for modern
+manufacturing systems (Guo \emph{et al.}, 2024). This mismatch often
+arises from the inherent variability within these systems, driven by
+factors such as market fluctuations, resource availability, and supply
+chain disruptions (Hopp and Spearman, 2021). Effective production
+scheduling plays a pivotal role in synchronizing demand with capacity by
+defining what to produce, how much to produce, where to produce, and in
+what sequence (\colorbox{yellow!40}{cf., Reference ≥ 2021}). Traditionally, production
+scheduling has relied on various approaches, ranging from simple
+dispatching rules (\colorbox{yellow!40}{e.g., Reference}) to more sophisticated
+algorithms (\colorbox{yellow!40}{e.g., Reference ≥ 2021}). Recent advances in the field
+have increasingly incorporated meta-heuristics to achieve optimal or
+near-optimal solutions (\colorbox{yellow!40}{Reference ≥ 2021}). However, using
+meta-heuristics in production scheduling presents challenges,
+particularly in dealing with the uncertainty and dynamic conditions
+typical of manufacturing environments (\colorbox{yellow!40}{Reference}). Meta-heuristics
+such as genetic algorithms, simulated annealing, or tabu search are
+often designed for deterministic problems, where environmental
+conditions and decision outcomes are fixed (\colorbox{yellow!40}{cf. Reference}). In
+contrast, stochastic optimization involves uncertainty and probabilistic
+outcomes, which meta-heuristics may struggle to accommodate, often
+leading to suboptimal solutions or long computation times
+(\colorbox{yellow!40}{Reference}). These algorithms typically rely on heuristics that are
+not well-suited to random or fluctuating environments, especially when
+applied to large-scale or complex scheduling problems (Márquez and
+Ribeiro, 2022). Additionally, meta-heuristics may fail to fully
+capitalize on the stochastic nature of the problem, lacking the ability
+to learn from past experiences or adjust strategies based on observed
+randomness (\colorbox{yellow!40}{Reference}). As a result, this can lead to inefficient
+exploration of the solution space and a higher likelihood of converging
+to a local optimum rather than a global one (\colorbox{yellow!40}{Reference}).
+Furthermore, meta-heuristic algorithms are typically tailored to
+specific problems, making them less versatile and prone to poor
+generalization (\colorbox{yellow!40}{Reference}). To overcome these challenges,
+reinforcement learning (RL) has emerged as a promising alternative for
+production scheduling (\colorbox{yellow!40}{Reference ≥ 2021}). RL is a branch of machine
+learning where an agent interacts with its environment to maximize
+long-term rewards (Sutton and Barto, 2018). Its capacity to make
+sequential decisions and adapt to stochastic environments makes RL
+especially suitable for production scheduling applications (\colorbox{yellow!40}{cf., Li
+et al., 2022; del Real Torres et al., 2022; Wang et al., 2022}).
+
+RL has proven effective in various manufacturing contexts. For instance,
+Tang and Salonitis (\colorbox{yellow!40}{2021}) leveraged deep RL with discrete-event
+simulation to optimize scheduling in reconfigurable systems, surpassing
+conventional dispatching rules. Chen et al. (\colorbox{yellow!40}{2022}) addressed the
+flexible job shop scheduling problem with resource preemption using a
+deep RL-based algorithm, outperforming traditional meta-heuristics. Liu
+et al. (\colorbox{yellow!40}{2022}) applied a Deep Q-Network algorithm for real-time
+scheduling in dynamic flexible job shop manufacturing. Gerpott et al.
+(\colorbox{yellow!40}{2022}) used the Actor-Critic algorithm to minimize tardiness and
+makespan in a two-stage hybrid flow shop. Beyond standalone
+applications, RL has been integrated with some operations management
+(OM) theories. For example, Silva and Azevedo (\colorbox{yellow!40}{2019}) applied RL to
+optimize work-in-process (WIP) caps in CONWIP and push systems,
+achieving a substantial reduction in WIP without sacrificing production
+volume. Xanthopoulos et al. (\colorbox{yellow!40}{2019}) demonstrated RL's superiority in
+deriving optimal control policies for CONWIP-type systems. Paraschos et
+al. (\colorbox{yellow!40}{2023}) used RL to optimize a three-stage production line,
+promoting Lean practices. Lahrichi et al. (\colorbox{yellow!40}{2023}) used SARSA
+algorithm to dynamically parameterize demand-driven material
+requirements planning, reducing inventory and preventing stockouts.
+
+One OM theory that has yet to be explored with RL in production
+scheduling is the Theory of Constraints (TOC). Like RL, which addresses
+decision-making in stochastic environments, TOC also does so, but with a
+strict focus on the constraint that limits the system's overall
+performance, usually protecting it through the use of buffers (Goldratt
+and Cox, 1984a). In production scheduling, TOC introduces two prominent
+techniques (Goldratt, 2006a; Schragenheim and Ronen, 1990): (i)
+drum-buffer-rope (DBR); and (ii) buffer management (BM). When applied
+together, these techniques, along with their associated performance
+measures --- throughput, inventory, and operating expenses --- enable
+the effective management of highly interdependent systems
+(\colorbox{yellow!40}{Reference}). They achieve this by protecting capacity-constrained
+resources against shortages or blockages through inventory buffers while
+synchronizing inflows to the rhythm of the constraint (\colorbox{yellow!40}{Reference}).
+TOC-based solutions to scheduling problems have demonstrated their
+effectiveness in various contexts. For instance, they have improved
+efficiency in production lines within aerospace engineering-to-order
+facilities (Telles \emph{et al.}, 2022a) and increased productivity in
+small and medium-sized manufacturing enterprises (Buestán Benavides and
+Van Landeghem, 2015). Furthermore, these solutions have been
+successfully applied to automotive parts manufacturing (Golmohammadi,
+2015), LCD panel production (Wu \emph{et al.}, 2010), and engine
+cylinder restoration (Ma and Chen, 2009).
+
+Despite the promising synergy between RL and TOC in production
+scheduling, their integration remains largely unexplored. This gap
+prompts the following research questions: (i) how can RL and TOC be
+combined to address production scheduling in stochastic manufacturing
+environments? (ii) what practical and theoretical outcomes can result
+from this combination? To address these questions, we employed
+computational simulation and conducted two experiments within the same
+stochastic manufacturing environment. In the first experiment,
+production scheduling was performed using a TOC-based solution (i.e.,
+DBR and BM). In the second, scheduling was carried out combining RL with
+TOC. From a pragmatic perspective, a summative evaluation comparing
+these experiments demonstrated that a scheduling solution combining RL
+and TOC outperformed the TOC-based solution in terms of both production
+volume and inventory levels. Theoretically, a formative evaluation
+revealed that this advantage stems from the RL agent's ability to
+monitor and adapt to system-wide WIP dynamics, rather than focusing
+solely on the constraint. We embedded this adaptive behavior into the
+traditional TOC scheduling solution, enhancing its DBR and BM
+components, which we believe is the main contribution of this study.
+
+The remainder of this paper is structured as follows. Section 2 provides
+the theoretical background on both RL and the TOC in the context of
+production scheduling. Section 3 outlines the research design, while
+Section 4 details the development of simulation models. Section 5
+describes the setup of the simulation experiments, with the
+corresponding summative and formative evaluations presented in Section
+6. Finally, Section 7 discusses the results, and Section 8
+contextualizes the research contributions and limitations, highlighting
+opportunities for future studies.

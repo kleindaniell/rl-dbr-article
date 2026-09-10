@@ -1,0 +1,112 @@
+\documentclass[11pt]{article}
+
+\usepackage{fontspec}
+\defaultfontfeatures{Mapping=}    % fontspec's default tex-text mapping
+                                   % spuriously emits U+0001 on some inputs
+                                   % here; pandoc already writes real Unicode
+                                   % dashes/quotes, so this mapping is unneeded
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{newunicodechar}
+% Stray Unicode math symbols appear in plain prose (mostly in the flagged
+% "REVISED DRAFT" section, which was typed by hand rather than via Word's
+% equation editor) -- map them to their LaTeX math equivalents so they
+% render instead of showing as missing-glyph boxes.
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{≠}{\ensuremath{\neq}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{±}{\ensuremath{\pm}}
+\newunicodechar{×}{\ensuremath{\times}}
+\newunicodechar{∑}{\ensuremath{\sum}}
+\newunicodechar{√}{\ensuremath{\sqrt{}}}
+\newunicodechar{′}{\ensuremath{{}'}}
+\newunicodechar{⁻}{\ensuremath{{}^-}}
+\newunicodechar{⁴}{\ensuremath{{}^4}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}
+\newunicodechar{π}{\ensuremath{\pi}}
+\newunicodechar{ρ}{\ensuremath{\rho}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{𝒜}{\ensuremath{\mathcal{A}}}
+\newunicodechar{𝒮}{\ensuremath{\mathcal{S}}}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{calc}
+\newcounter{none}          % pandoc's longtable output sets \LTcaptype{none}
+                            % to skip incrementing the table counter when a
+                            % caption is baked into the table's own header row
+\usepackage{subcaption}
+\usepackage{xcolor}                % \colorbox{yellow!40}{...} -- highlights
+                                    % carried over from the Word source,
+                                    % flagging unresolved citations and other
+                                    % author TODOs (soul's \hl breaks under
+                                    % XeTeX on Unicode/nested-hyperref text)
+\usepackage[margin=1in]{geometry}
+\usepackage[style=authoryear,natbib=false,backend=bibtex]{biblatex}
+\addbibresource{references.bib}
+\usepackage{hyperref}
+
+\title{Integrating Reinforcement Learning and the Theory of Constraints for
+Production Scheduling in Stochastic Manufacturing Environments}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Modern manufacturing systems often struggle to align demand with capacity,
+making production scheduling a critical yet challenging task --- especially
+under stochastic conditions. Traditional heuristic and metaheuristic methods
+frequently yield suboptimal results due to their limited adaptability.
+Reinforcement Learning (RL), known for its ability to make sequential
+decisions in uncertain environments, has shown promise in overcoming these
+limitations and has outperformed conventional methods in various scheduling
+problems. While RL has been integrated with operations management theories
+such as Lean and Factory Physics, its combination with the Theory of
+Constraints (TOC) --- which focuses on managing system constraints under
+variability --- remains underexplored. This study investigates how
+integrating RL with TOC can enhance scheduling performance in stochastic
+manufacturing environments. We conducted two simulation experiments: one
+using a traditional TOC-based scheduling approach, and another combining RL
+with TOC. Results show that the RL-TOC hybrid solution achieved superior
+performance in terms of both production volume and inventory levels. This
+advantage is attributed to the RL agent's ability to adapt to system-wide
+work-in-process dynamics, beyond the constraint. We embedded this adaptive
+behavior into the traditional TOC scheduling solution, enhancing its
+drum-buffer-rope and buffer management components, which we believe is the
+main contribution of this study.
+\end{abstract}
+
+\noindent\textbf{Keywords:} theory of constraints; reinforcement learning;
+production scheduling; production planning and control; manufacturing
+
+\input{sections/01-introduction.tex}
+\input{sections/02-theoretical-background.tex}
+\input{sections/02-reinforcement-learning-sub.tex}
+\input{sections/02-theory-of-constraints-sub.tex}
+\input{sections/03-research-design.tex}
+\input{sections/04-simulation-models.tex}
+\input{sections/04-virtual-environment-sub.tex}
+\input{sections/04-toc-based-simulation-model-sub.tex}
+\input{sections/04-rl-toc-based-simulation-model-revised-dr-sub.tex}
+\input{sections/04-rl-toc-based-simulation-model-sub.tex}
+\input{sections/05-execution-of-simulation-experiments.tex}
+\input{sections/06-summative-and-formative-evaluations.tex}
+\input{sections/07-discussion.tex}
+\input{sections/08-conclusions.tex}
+
+\nocite{*}
+\printbibliography
+
+\end{document}

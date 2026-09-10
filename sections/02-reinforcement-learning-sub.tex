@@ -1,0 +1,179 @@
+\subsection{Reinforcement Learning}\label{reinforcement-learning}
+
+RL is a branch of machine learning characterized by two core components
+(\colorbox{yellow!40}{Reference}): (i) the agent; and (ii) the environment. The agent
+observes the current state of the environment, selects an action, and
+receives feedback in the form of a reward associated with that action
+(Sutton and Barto, 2018). Through iterative interactions with the
+environment, the agent refines its decision-making strategy, or policy,
+to maximize long-term rewards (Esteso \emph{et al.}, 2023). Unlike
+traditional machine learning approaches that rely on static,
+pre-existing datasets, RL agents learn from dynamic, continuously
+evolving datasets generated through their ongoing interaction with a
+virtual environment (Panzer and Bender, 2022). This environment is often
+modeled using discrete-event simulation, which effectively captures
+system dynamics and variability (Kuhnle \emph{et al.}, 2022; Nguyen
+\emph{et al.}, 2022).
+
+RL problems are typically framed as a sequence of interactions between
+the agent and the environment at discrete time steps
+\(t \in \left\{ 0,\ 1,\ 2,\ \ldots,T \right\}\) (\colorbox{yellow!40}{Reference}). At
+each time step \(t\), the agent receives a representation of the
+environment's state, \(S_{t}\mathcal{\in S}\), where \(\mathcal{S}\) is
+the set of possible states (\colorbox{yellow!40}{Reference}). Based on this state, the
+agent selects an action, \(A_{t}\mathcal{\in A(}S_{t})\), where
+\(\mathcal{A(}S_{t})\) represents the set of actions available in state
+\(S_{t}\) (\colorbox{yellow!40}{Reference}). One time step later, as a result of its
+action, the agent receives a numerical reward,
+\(R_{t + 1}\mathcal{\in R \subset}\mathbb{R}\), and transitions to a new
+state, \(S_{t + 1}\) (\colorbox{yellow!40}{Reference}). In manufacturing applications of
+RL, the environment corresponds to the manufacturing system itself (or a
+model of it), such as an assembly line or warehouse (\colorbox{yellow!40}{e.g.,
+Reference}). The agent acts as the decision-maker, which could be a
+production scheduler, for example (\colorbox{yellow!40}{e.g., Reference}). The state
+represents the current status of the system, such as the number of
+machines that are idle, running, or under maintenance (\colorbox{yellow!40}{e.g.,
+Reference}). The action refers to a decision the agent makes within the
+system, such as assigning a new work order to a machine or adjusting the
+priority of a pending job (\colorbox{yellow!40}{e.g., Reference}). The reward represents
+the payoff the agent receives in response to its actions, typically
+aimed at improving a specific performance measure, such as production
+volume or lead time (\colorbox{yellow!40}{e.g., Reference}).
+
+The environment in RL can be deterministic or stochastic. In the latter
+case, it is often modeled as a finite Markov Decision Process (MDP),
+where the environment's response at \(t + 1\) depends only on the state
+and action representations at \(t\) (\colorbox{yellow!40}{Reference}). This assumption
+simplifies the dynamics of agent-environment interactions, which can be
+described by a distribution function, such as (\colorbox{yellow!40}{Reference}):
+
+\begin{equation}
+p\left( s',r \middle| s,a \right) = \Pr\left\{ S_{t + 1} = s',\ R_{t + 1} = r \middle| S_{t} = s,A_{t} = a \right\}
+\tag{1}
+\end{equation}
+
+for all possible states \(s\), \(s'\), rewards \(r\), and actions \(a\).
+This formulation allows prediction of the next state and expected reward
+based on the current state and action, though it requires prior
+knowledge on the distribution function (\colorbox{yellow!40}{Reference}).
+
+The agent's behavior is governed by a policy,
+\(\pi_{t}\left( a \middle| s \right)\), which represents the probability
+of taking action \(A_{t} = a\) in state \(S_{t} = s\) (\colorbox{yellow!40}{Reference}).
+If the policy involves no randomness, then only one action can be taken
+from each state, resulting in a deterministic policy \(\pi_{t}(s)\)
+(\colorbox{yellow!40}{Reference}). RL methods define how the agent updates its policy
+based on its experiences, with the ultimate goal of maximizing the total
+rewards received over time, known as the return \(G_{t}\):
+
+\begin{equation}
+G_{t} = \sum_{k = 0}^{T - t - 1}{\gamma^{k}R_{t + k + 1},}
+\tag{2}
+\end{equation}
+
+where \(\gamma\) is the discount rate \((0 \leq \gamma \leq 1)\) that
+determines the present value of future rewards (\colorbox{yellow!40}{Reference}). A
+reward received \(k\) time steps in the future is worth only
+\(\gamma^{k - 1}\) times its immediate value.
+
+Most RL algorithms rely on estimating value functions, which assess the
+`goodness' of being in a given state or taking a specific action
+(\colorbox{yellow!40}{Reference}). This goodness is defined in terms of the expected
+return \(\mathbb{E}_{\pi}\lbrack.\rbrack\) and is essential for
+identifying optimal policies \(\pi_{*}\), where
+\(\upsilon_{*}(s) \geq \upsilon_{\pi}(s)\) or
+\(q_{*}(s,a) \geq q_{\pi}(s,a)\) for all \(s \in \mathcal{S}\) and
+\(a \in \mathcal{A}\), (\colorbox{yellow!40}{cf., Reference}). The two primary value
+functions for finite MDPs are (\colorbox{yellow!40}{Reference}):
+
+\begin{enumerate}
+\def\labelenumi{\roman{enumi}.}
+\item
+  State-value function \((\upsilon_{\pi}(s))\): The expected return
+  starting in state \(s\) and following policy \(\pi\):
+\end{enumerate}
+
+\begin{equation}
+\upsilon_{\pi}(s) = \mathbb{E}_{\pi}\left\lbrack G_{t}|S_{t} = s \right\rbrack = \mathbb{E}_{\pi}\left\lbrack \left. \ \sum_{k = 0}^{T - t - 1}{\gamma^{k}R_{t + k + 1}} \right|S_{t} = s \right\rbrack;
+\tag{3}
+\end{equation}
+
+\begin{enumerate}
+\def\labelenumi{\roman{enumi}.}
+\setcounter{enumi}{1}
+\item
+  Action-value function \((q_{\pi}(s,a))\): The expected return starting
+  from state \(s\), taking action \(a\), and subsequently following
+  policy \(\pi\):
+\end{enumerate}
+
+\begin{equation}
+q_{\pi}(s,a) = \mathbb{E}_{\pi}\left\lbrack G_{t}|S_{t} = s,A_{t} = a\  \right\rbrack = \mathbb{E}_{\pi}\left\lbrack \left. \ \sum_{k = 0}^{T - t - 1}{\gamma^{k}R_{t + k + 1}} \right|S_{t} = s,\ A_{t} = a \right\rbrack.
+\tag{4}
+\end{equation}
+
+Value functions satisfy recursive relationships, which allows the use of
+Bellman optimality equation (\colorbox{yellow!40}{cf., Reference}). This leads to the
+optimal forms of the state-value function \({(\upsilon}_{*}(s))\) and
+the action-value function \({(q}_{*}(s,a)\)), defined as follows
+(\colorbox{yellow!40}{Reference}):
+
+\begin{equation}
+\upsilon_{*}(s) = \max_{a \in A(s)}{\sum_{s',r}^{}{p\left( s',r \middle| s,a \right)\left\lbrack r + \gamma\upsilon_{*}(s') \right\rbrack}.}
+\tag{5}
+\end{equation}
+
+\begin{equation}
+q_{*}(s,a) = \sum_{s',r}^{}{p\left( s',r \middle| s,a \right)}\left\lbrack r + \gamma\max_{a'}{q_{*}(s',a')} \right\rbrack.
+\tag{6}
+\end{equation}
+
+The computation of optimal policies depends on how the agent predicts
+the environment\textquotesingle s response to its actions
+(\colorbox{yellow!40}{Reference}). In model-based methods, where the agent uses a model
+to plan actions in advance, such as estimating
+\(p\left( s',r \middle| s,a \right)\), dynamic programming algorithms
+are typically employed (\colorbox{yellow!40}{e.g., Reference}). In contrast, model-free
+methods focus on learning the direct relationship between actions and
+returns through `trial and error', often utilizing temporal-difference
+algorithms (\colorbox{yellow!40}{Reference}). Model-free methods can be further divided
+into on-policy and off-policy strategies (\colorbox{yellow!40}{Reference}). An on-policy
+strategy learns from the actions taken by the current policy, with SARSA
+being the prominent learning algorithm (\colorbox{yellow!40}{e.g., Reference}), while an
+off-policy strategy learns from actions taken by a combination of the
+current and different policies, typically implemented using the
+Q-learning algorithm (\colorbox{yellow!40}{e.g., Reference}). Furthermore, model-free
+methods can be categorized into gradient-based and gradient-free
+methods. Gradient-based methods, such as Proximal Policy Optimization
+(PPO), optimize policies by directly adjusting parameters in the
+direction of the gradient of the expected return with respect to the
+policy parameters (\colorbox{yellow!40}{Reference}). The PPO algorithm specifically
+improves upon traditional policy gradient methods by employing a clipped
+objective function to prevent large updates that could destabilize
+training (\colorbox{yellow!40}{Reference}). The core PPO objective is expressed as
+follows:
+
+\begin{equation}
+L^{CLIP}(\theta) = \mathbb{E}_{t}\left\lbrack \min\left( p_{t}(\theta){\widehat{A}}_{t},\ clip(p_{t}(\theta),1 - \epsilon,1 + \epsilon){\widehat{A}}_{t} \right) \right\rbrack;
+\tag{7}
+\end{equation}
+
+where
+\(p_{t}(\theta) = \frac{\pi_{\theta}\left( a|s \right)}{\pi_{\theta_{old}}\left( a|s \right)}\)
+is the probability ratio,
+\({\widehat{A}}_{t} = G_{t} - \upsilon_{\pi}(s)\) is the estimated
+advantage, and \(\epsilon\) is a small hyperparameter controlling the
+clipping range. This method ensures that the updates are stable and
+avoid excessively large policy changes (\colorbox{yellow!40}{Reference}). Gradient-free
+methods, on the other hand, typically rely on search-based techniques or
+evolutionary strategies to update the policy without directly computing
+gradients (\colorbox{yellow!40}{Reference}). These methods are particularly useful in
+environments where the gradient is difficult to compute or highly noisy
+(\colorbox{yellow!40}{Reference}). More recently, both model-based and model-free methods
+have incorporated deep learning, leading to algorithms like Actor-Critic
+and Deep Q-Network (\colorbox{yellow!40}{e.g., Reference 1, Reference 2}), which have
+paved the way for a new branch of RL known as deep RL (\colorbox{yellow!40}{cf.,
+Reference}). The ability to make autonomous sequential decisions and
+adapt to stochastic environments makes RL particularly well-suited for
+production scheduling applications (\colorbox{yellow!40}{cf., Reference 1, Reference 2}),
+providing a foundation for the remainder of this work.

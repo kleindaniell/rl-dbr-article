@@ -1,0 +1,143 @@
+\subsection{\texorpdfstring{Virtual Environment
+}{Virtual Environment }}\label{virtual-environment}
+
+The reference model by Atwater and Chakravorty (\colorbox{yellow!40}{2002}), which serves
+as the basis for constructing the virtual environment, represents a
+job-shop manufacturing system that operates 24 hour per day, seven days
+a week, producing ten different products. The demand and production
+routes for these products are outlined in
+\colorbox{yellow!40}{\hyperref[_Ref187516873]{Figure 2}} and detailed in Table S1 of the
+supplementary material. Each product requires \colorbox{yellow!40}{one} unit of raw
+material for production. The system utilizes 13 resources, with infinite
+queue in front of each one, and cycle times that vary depending on the
+specific product being produced; these cycle times are recorded in Table
+S2. The reference model assumes no changeovers or downtime for the
+resources. Therefore, considering
+\(\mathbb{E}\left\lbrack \mathcal{T}_{j}^{CT} \right\rbrack = 0\),
+\(\mathbb{E}\left\lbrack \mathcal{E}_{\forall j} \right\rbrack = 1\)\hspace{0pt}\hspace{0pt},
+and the average demands from Table S1 (denoted as \(m_{i}\)), the
+primary constraint in the system is resource nine, as determined by
+Equation 9 (\colorbox{yellow!40}{cf., Reference}).
+
+The virtual environment was implemented computationally using Python
+3.11, with one time step representing one hour. Due to its stochastic
+nature, the SimPy framework for discrete-event simulation (Eriksson
+\emph{et al.}, 2022) was employed. Additionally, OpenAI Gym was used to
+facilitate its subsequent integration with RL algorithms (Brockman
+\emph{et al.}, 2016; Lang \emph{et al.}, 2021). The reference model
+consists of a terminal system than rans for 200,000 hour (Atwater and
+Chakravorty, 2002b).
+
+To increase the variance of the virtual environment, we introduced
+changeovers and downtime to the resources. The changeover time
+\(\left( \mathcal{T}_{j}^{CT} \right)\) was modeled using a Normal
+distribution, as this is typically applied when the operation consists
+of a series of independent and sequential tasks (Yu and Ram, 2006). The
+average changeover time was randomly assigned for each resource using a
+Uniform distribution, \(U(0.0,\ 0.5)\). Similarly, the standard
+deviation of the changeover time was defined using a Uniform
+distribution, \(U(0.0,\ 0.3)\). Regarding downtime, it was applied to
+all resources through distributions for the time between failures and
+time to repair. Time between failures
+\(\left( \mathcal{T}_{j}^{TBF} \right)\) was modeled using an
+Exponential distribution, assuming that all resources are in the
+maturity phase of their life cycle and thus exhibit a constant failure
+rate (Sellitto and Brusius, 2017). The failure rate was randomly defined
+using a Uniform distribution, \(U(0.001,\ 0.04)\). For time to repair
+\(\left( \mathcal{T}_{j}^{TTR} \right)\), similar to changeover time,
+the distribution was modeled using a Normal distribution, with the mean
+and standard deviation defined by the Uniform distributions
+\(U(5.0,\ 15.0)\) and \(U(1.0,\ 3.0)\), respectively.
+\colorbox{yellow!40}{}\hyperref[_Ref187517135]{Table 1} summarizes the values used for
+each resource.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0957}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1204}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0635}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0914}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1204}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1149}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1204}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0635}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0914}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1065}}@{}}
+\toprule\noalign{}
+\multicolumn{10}{@{}>{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.9882} + 18\tabcolsep}@{}}{%
+\begin{minipage}[b]{\linewidth}\raggedright
+\protect\phantomsection\label{_Ref187517135}{}Table 1. Elements of
+variance introduced into the virtual environment.
+\end{minipage}} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Resource
+\end{minipage} &
+\multicolumn{3}{>{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.2753} + 4\tabcolsep}}{%
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\mathcal{T}_{j}^{CT}\)\textsuperscript{(1)}
+\end{minipage}} &
+\multicolumn{2}{>{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.2353} + 2\tabcolsep}}{%
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\mathcal{T}_{j}^{TBF}\)\textsuperscript{(1)}
+\end{minipage}} &
+\multicolumn{3}{>{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.2753} + 4\tabcolsep}}{%
+\begin{minipage}[b]{\linewidth}\raggedright
+\(\mathcal{T}_{j}^{TTR}\)\textsuperscript{(1)}
+\end{minipage}} &
+\multirow{2}{=}{\begin{minipage}[b]{\linewidth}\raggedright
+\(\mathbb{E}\left\lbrack \mathcal{E}_{j} \right\rbrack\)\textsuperscript{(2,3)}
+\end{minipage}} \\
+\begin{minipage}[b]{\linewidth}\raggedright
+\[j\]
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Distribution
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mean
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Std. dev.
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Distribution
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Failure rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Distribution
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mean
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Std. dev.
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & Normal & 0.25 & 0.09 & Exponential & 0.0098 & Normal & 5.24 & 2.97 &
+0.89 \\
+2 & Normal & 0.04 & 0.05 & Exponential & 0.0058 & Normal & 5.95 & 1.94 &
+0.93 \\
+3 & Normal & 0.42 & 0.17 & Exponential & 0.0116 & Normal & 5.28 & 1.91 &
+0.86 \\
+4 & Normal & 0.41 & 0.22 & Exponential & 0.0162 & Normal & 2.35 & 1.16 &
+0.88 \\
+5 & Normal & 0.34 & 0.10 & Exponential & 0.0252 & Normal & 6.00 & 2.16 &
+0.88 \\
+6 & Normal & 0.49 & 0.13 & Exponential & 0.0376 & Normal & 5.14 & 2.22 &
+0.83 \\
+7 & Normal & 0.16 & 0.09 & Exponential & 0.0079 & Normal & 5.31 & 1.95 &
+0.92 \\
+8 & Normal & 0.27 & 0.21 & Exponential & 0.0104 & Normal & 4.45 & 1.93 &
+0.90 \\
+9 & Normal & 0.45 & 0.23 & Exponential & 0.0045 & Normal & 2.69 & 1.21 &
+0.95 \\
+10 & Normal & 0.49 & 0.12 & Exponential & 0.0188 & Normal & 5.01 & 2.85
+& 0.82 \\
+11 & Normal & 0.39 & 0.17 & Exponential & 0.0301 & Normal & 3.15 & 2.39
+& 0.85 \\
+12 & Normal & 0.25 & 0.05 & Exponential & 0.0194 & Normal & 5.59 & 1.50
+& 0.87 \\
+13 & Normal & 0.28 & 0.07 & Exponential & 0.0171 & Normal & 2.95 & 1.71
+& 0.89 \\
+\multicolumn{10}{@{}>{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.9882} + 18\tabcolsep}@{}}{%
+(1) Unit of time: hour; (2) Unit of Effectiveness: percentage; (3)
+\(\mathbb{E}\left\lbrack \mathcal{E}_{j} \right\rbrack = \frac{\mathbb{E}\left\lbrack \mathcal{T}_{j}^{TBF} \right\rbrack}{\left( \mathbb{E}\left\lbrack \mathcal{T}_{j}^{TBF} \right\rbrack\mathbb{+ E}\left\lbrack \mathcal{T}_{j}^{TTR} \right\rbrack \right)}\).} \\
+\end{longtable}
+}
